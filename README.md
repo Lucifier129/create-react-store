@@ -80,7 +80,7 @@ createStore receives object as initialState, return { useData, useCreate, Provid
   - a react-hooks use in function-component to read store data
 - useCreate(data) -> store
   - a react-hooks use in function-component to re-create a store with data
-- <Provider initialData={initialData}>{children}</Provider>
+- Provider({ initialData: object}) 
   - Provider is a React Component to provide data for sub-components
 
 ### Provider({ stores: Store[] })
