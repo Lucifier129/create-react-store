@@ -38,14 +38,19 @@ const createTracer = (f: (...args) => any, name?: string): typeof f => (...args)
   }
 }
 
-export const useAction = (f: (...args) => any, options?: ActionOptions) => {
+export const useAction = <F extends (...args) => any>(f: F, options?: ActionOptions): F => {
   let callback = useMemo(() => {
     if (tracing) {
-      return createTracer(f, options.name)
+      if (options) {
+        return createTracer(f, options.name) as F
+      } else {
+        return createTracer(f) as F
+      }
     } else {
       return f
     }
   }, [f, options ? options.name : null])
+
   let action = useMutate(callback)
 
   return action
@@ -144,7 +149,7 @@ export const createStore = <Data extends object>(
   defaultData: Data,
   options?: CreateStoreOptions<Data>
 ): Store<Data> => {
-  let Context = options ? options.Context : React.createContext<Data>(defaultData)
+  let Context = options ? options.Context : React.createContext<Data | null>(null)
 
   let Provider: FC<{ initialData?: Data }> = ({ initialData = defaultData, children }) => {
     let data = useReactive(initialData)
@@ -154,6 +159,9 @@ export const createStore = <Data extends object>(
 
   let useData = () => {
     let data = useContext(Context)
+    if (data === null) {
+      throw new Error('You may forgot add store to <Provider stores={[..., store]} />')
+    }
     return data
   }
 

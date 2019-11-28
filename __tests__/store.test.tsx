@@ -109,4 +109,106 @@ describe('useBistate', () => {
 
     expect(button.textContent).toBe('16')
   })
+
+  it('support custom hooks', () => {
+    let countStore = createStore({ count: 0 })
+    let stepStore = createStore({ step: 1 })
+
+    let useCount = () => {
+      let { count } = countStore.useData()
+      return count
+    }
+
+    let useStep = () => {
+      let { step } = stepStore.useData()
+      return step
+    }
+
+    let useIncreCount = () => {
+      let step = useStep()
+      let data = countStore.useData()
+
+      let increCount = useAction(() => {
+        data.count += step
+      })
+
+      return increCount
+    }
+
+    let useIncreStep = () => {
+      let data = stepStore.useData()
+      let increStep = useAction(() => {
+        data.step += 1
+      })
+      return increStep
+    }
+
+    let Counter = () => {
+      let count = useCount()
+      let step = useStep()
+      let increStep = useIncreStep()
+      let increCount = useIncreCount()
+
+      return (
+        <>
+          <button id="count" onClick={increCount}>
+            {count}
+          </button>
+          <button id="step" onClick={increStep}>
+            {step}
+          </button>
+        </>
+      )
+    }
+
+    act(() => {
+      ReactDOM.render(
+        <Provider stores={[countStore, stepStore]}>
+          <Counter />
+        </Provider>,
+        container
+      )
+    })
+
+    let countButton = container.querySelector('#count')
+    let stepButton = container.querySelector('#step')
+
+    expect(countButton.textContent).toBe('0')
+    expect(stepButton.textContent).toBe('1')
+
+    act(() => {
+      countButton.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    })
+
+    expect(countButton.textContent).toBe('1')
+    expect(stepButton.textContent).toBe('1')
+
+    act(() => {
+      stepButton.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    })
+
+    expect(countButton.textContent).toBe('1')
+    expect(stepButton.textContent).toBe('2')
+
+    act(() => {
+      countButton.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    })
+
+    expect(countButton.textContent).toBe('3')
+    expect(stepButton.textContent).toBe('2')
+
+    act(() => {
+      stepButton.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    })
+
+    expect(countButton.textContent).toBe('3')
+    expect(stepButton.textContent).toBe('3')
+
+    act(() => {
+      countButton.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    })
+
+    expect(countButton.textContent).toBe('6')
+    expect(stepButton.textContent).toBe('3')
+  })
 })

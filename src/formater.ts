@@ -1,3 +1,7 @@
+/**
+ * custom devtools formatters
+ * for better displaying Proxy object
+ */
 const OriginalProxy = Proxy
 
 let isEnable = false

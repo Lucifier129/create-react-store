@@ -2,11 +2,14 @@ export {
   isReactive,
   useAction,
   createStore,
+  useReactive,
   useComputed,
   useBinding,
   CreateStoreOptions,
   Store,
   mutate,
   remove,
-  Provider
+  Provider,
+  enableTracing,
+  disableTracing
 } from './core'

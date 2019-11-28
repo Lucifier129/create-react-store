@@ -1,8 +1,12 @@
 {
   "name": "create-react-store",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.2",
   "description": "Create a reactive store for React App",
-  "main": "index.js",
+  "main": "dist/lib/index.js",
+  "typings": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
